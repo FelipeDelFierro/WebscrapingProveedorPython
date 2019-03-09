@@ -6,7 +6,7 @@ import pandas as pd
 import re
 #connection class
 class Connection:
-    con = pyodbc.connect(DRIVER='{SQL Server}',SERVER='170.239.84.187',DATABASE='GetOtecV3',UID='sa',PWD='MJ5813seje')
+    con = pyodbc.connect(DRIVER='{SQL Server}',SERVER='server',DATABASE='database',UID='sa',PWD='password')
     cursor = con.cursor()
 
 #new command  (cmd) 
