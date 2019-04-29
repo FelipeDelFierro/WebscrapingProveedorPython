@@ -19,18 +19,18 @@ def getProducto(codigoProducto):
     return producto
 
 
-#headers para engañar al servidor
+#headers 
 headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.119 Safari/537.36'}
 #credenciales login si es necesario 
 login_data={
-    'email': 'felipe.delfierro@getsoft.cl',
-    'passwd': 'Here.20192',
+    'email': '',
+    'passwd': '',
     'back':'' ,
     'SubmitLogin': ''
     }
 
 contador= 0
-#creo una sesion con login en el sitio web ( request es la libreria de python)
+#creo una sesion con login en el sitio web 
 with requests.Session() as s:
      #ingreso la pagina donde esta el login  
       urlBase ="https://www.lasecretaria.cl/"
@@ -52,10 +52,10 @@ with requests.Session() as s:
             LinkCategorias = []    
             session = s.post(url,headers=headers)
             soupLinkCategorias = BeautifulSoup(session.content,'html5lib')
-            ass= soupLinkCategorias.find_all('ul' , attrs={'nav navbar-nav megamenu right'})
+            links= soupLinkCategorias.find_all('ul' , attrs={'nav navbar-nav megamenu right'})
 
-            for x in ass:
-                for li in x.find_all('li'):
+            for link in links:
+                for li in link.find_all('li'):
                     a =li.find('a')
                     LinkCategorias.append(a['href'])   
         except Exception as ex:
@@ -99,7 +99,7 @@ with requests.Session() as s:
             str(precio).replace('.','')
             precio2 = precio.replace('.','')
            
-            #recorrer link productos interno
+            #recorrer link productos detalle
             rInterno = s.post(linkFinal, headers=headers)
             soupAtributos = BeautifulSoup(rInterno.content,'html5lib')
             imagenBruto = soupAtributos.find(itemprop="image")
@@ -146,21 +146,6 @@ with requests.Session() as s:
         print("Guardando registros para la categoria "+ str(Categoria) + "en la base de datos")
 print("Se Verificaron "+  str(contador) + " registros en total para el proveedor")
 
-
-
-
-
-
-#     
-
-
-# def autenticacion(header, loginData):
-#     s = requests.Session()
-#     url = "https://www.lasecretaria.cl/autenticacion"
-#     r = s.get(url,headers=header)
-#     soup = BeautifulSoup(r.content,'html5lib')
-#     loginData['login_form'] = soup.find('input', attrs={'name':'email','name':'passwd'})['value']
-#     r = s.post(url,data=login_data,headers=headers)     
 
 
 
@@ -212,51 +197,4 @@ print("Se Verificaron "+  str(contador) + " registros en total para el proveedor
 #              """.format(codigoProducto,nombreProducto,codigoProducto,precio2,nombreProducto,Categoria,ImagenLink,linkFinal,codigoProducto , precio2)
         
 
-#  url_productos = "https://www.lasecretaria.cl/28-utiles-escolares?id_category=28&n=100000"
-#       r = s.post(url_productos, headers=headers)
-#       soupProductos = BeautifulSoup(r.content,'html5lib')
-#       #verifico donde esta el div de productos
-#       productos = soupProductos.find_all('div', attrs={'class':'product-meta'})
-#       # recorro cada producto
-#       cantidadProductos= len(productos)
-#       print("hay " + str(cantidadProductos) + " encontrados")    
-#       for producto in productos:
-#         #asigno valor a variables 
-#         Categoria = soupProductos.find('span', attrs={'class':'navigation_page'}).text
-#         SubCategoria= "NULL"
-#         IdUnidad = '1'
-#         IdCuenta = '1'
-#         IdProveedor = '6'
-#         nombreProducto = producto.find('h5', attrs={'class': 'name'}).text
-#         linkProducto = producto.find('a', attrs={'class':'product-name'})
-#         linkFinal= linkProducto['href']
-#         precio = producto.find('span', attrs={'class': 'price'}).text
-#         str(precio).replace('.','')
-#         precio2 = precio.replace('.','')
 
-#         #recorrer link productos interno
-#         rInterno = s.post(linkFinal, headers=headers)
-#         soupAtributos = BeautifulSoup(rInterno.content,'html5lib')
-#         imagenBruto = soupAtributos.find(itemprop="image")
-#         ImagenLink= imagenBruto["src"]
-#         codigoProducto = soupAtributos.find(itemprop="sku").text
-
-#         sql = """exec usp_webscrapingInsertProveedor 
-#         @nombreProducto = ?,@IdUnidad=? ,
-#          @idCuenta=?, @categoria=?, @subcategoria=?, @ImagenLink=?, @linkProducto=?, @codigoProducto=?, @IdProveedor=?,
-#         @precio=?
-#         """
-#         values = (nombreProducto,IdUnidad,IdCuenta,Categoria,SubCategoria,ImagenLink,linkFinal,codigoProducto,IdProveedor,precio2)
-#         cursor.execute(sql,values)
-#         cursor.commit()
-#         contador +=1
-#         print("Insertando producto numero " + str(contador) + " en la  base de datos")
-# print("Se guardaron "+  str(contador) + "nuevos registros")
-
-    #   def getCategoriesName(Links):
-    #     """function for split the link and get the categorie"""
-    #     categories = []
-    #     for x in Links:
-    #          a = x.split('-',1)
-    #          categories.append(a[1])
-    #     return categories
